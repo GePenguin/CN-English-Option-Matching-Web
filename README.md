@@ -1,3 +1,3 @@
 # CN-English-Option-Matching-Web
 基于Flask搭建的中文释义匹配英文单词web应用
-[](./assets/中文匹配英文单词.png)
+![](./assets/中文匹配英文单词.png)
