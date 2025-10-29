@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>词汇大师 | 单词学习</title>
+    <style>
+        :root {
+            --primary: #6366F1;
+            --primary-dark: #4F46E5;
+            --secondary: #10B981;
+            --background: #F1F5F9;
+            --card: #FFFFFF;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --success: #10B981;
+            --danger: #EF4444;
+            --border: #E2E8F0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro', 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            background-image: linear-gradient(to bottom right, #F1F5F9, #E6E9F3);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+        }
+        
+        .question-container {
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        
+        .question-label {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text);
+        }
+        
+        .hint {
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 15px;
+            padding: 8px 0;
+            margin-bottom: 10px;
+        }
+        
+        .options {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .option {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        }
+        
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .option-word {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .option-pos {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        form {
+            display: contents;
+        }
+        
+        .stats-bar {
+            display: flex;
+            margin-top: 25px;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background: rgba(241, 245, 249, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 10px 15px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .streak .stat-value {
+            color: var(--success);
+        }
+        
+        .progress-container {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px;
+            }
+            
+            .option {
+                padding: 16px;
+            }
+            
+            .option-word {
+                font-size: 16px;
+            }
+        }
+
+        /* 新增输入模式样式 */
+        .input-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .word-input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 18px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .word-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-tip {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-align: center;
+            padding: 10px 0;
+            font-style: italic;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(99, 102, 241, 0.25);
+        }
+        
+        .warning-hint {
+            background: rgba(255, 212, 95, 0.15);
+            border-left: 4px solid #FFD45F;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            color: #855B00;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-hint {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid #6366F1;
+            padding: 12px 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            color: #4F46E5;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+            /*快捷键样式*/
+        .option-shortcut {
+        width: 28px;
+        height: 28px;
+        background: rgba(79, 70, 229, 0.1);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        color: var(--primary);
+        margin-right: -5px;
+        transition: all 0.2s ease;
+    }
+    
+    .option:hover .option-shortcut {
+        background: var(--primary);
+        color: white;
+    }
+    </style>
+</head>
+<body>
+     <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span class="logo-text">词汇大师</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="question-container">
+                <div class="question-label">
+                    <div>❓</div> 
+                    <span>单词定义</span>
+                </div>
+                <div class="question-text">{{ question }}</div>
+            </div>
+            
+            {% if not include_correct %}
+            <div class="info-hint">
+                <div>💡</div>
+                <span>选项不一定包含正确答案</span>
+            </div>
+            {% else %}
+            <div class="info-hint">
+                <div>💡</div>
+                <span>选项不一定包含正确答案</span>
+            </div>
+            {% endif %}
+            
+            <div class="hint">从下方选择对应的英文单词</div>
+            
+            <form method="POST">
+                <div class="options">
+                    {% for option in options %}
+                        <button type="submit" name="word" value="{{ option.word }}" class="option">
+                            <div class="option-word">{{ option.word }}</div>
+                            <div class="option-pos">{{ option.pos }}</div>
+                        </button>
+                    {% endfor %}
+                </div>
+                
+                <!-- 输入区域 -->
+                <div class="input-container">
+                    <div class="input-group">
+                        <input type="text" 
+                               name="user_input" 
+                               class="word-input" 
+                               placeholder="或请在此输入英文单词..." 
+                               autocomplete="off">
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">   
+                        <span>提交答案</span>
+                    </button>
+                    
+                    <p class="form-tip">注意：两种方式均可提交，输入时需准确拼写</p>
+                </div>
+                
+                <input type="hidden" name="correct_word" value="{{ correct_word }}">
+                <input type="hidden" name="pos" value="{{ pos }}">
+            </form>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ stats.total_questions % 10 * 10 }}%"></div>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value">{{ stats.total_questions }}</div>
+                    <div class="stat-label">已回答</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ stats.correct_answers }}</div>
+                    <div class="stat-label">正确</div>
+                </div>
+                <div class="stat-item streak">
+                    <div class="stat-value">{{ stats.current_streak }}</div>
+                    <div class="stat-label">连对</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- 添加处理回车键的JavaScript -->
+    <script>
+        // 绑定输入框的回车事件
+        document.addEventListener('DOMContentLoaded', function() {
+                const inputField = document.querySelector('.word-input');
+        const submitButton = document.querySelector('.submit-btn');
+        const options = document.querySelectorAll('.option');
+        let shortcutsEnabled = true;
+        
+        // 回车键提交
+        if(inputField) {
+            inputField.addEventListener('keydown', function(event) {
+                if(event.key === 'Enter') {
+                    event.preventDefault();
+                    submitButton.click();
+                }
+            });
+            
+            // 输入框获得焦点时禁用快捷键
+            inputField.addEventListener('focus', function() {
+                shortcutsEnabled = false;
+            });
+            
+            // 输入框失去焦点时启用快捷键
+            inputField.addEventListener('blur', function() {
+                shortcutsEnabled = true;
+            });
+        }
+        
+        // 快捷键功能
+        document.addEventListener('keydown', function(event) {
+            if(!shortcutsEnabled) return;
+            
+            // 1-4 快捷键选择选项
+            if (event.key >= '1' && event.key <= '4') {
+                const optionIndex = parseInt(event.key) - 1;
+                if (optionIndex < options.length) {
+                    event.preventDefault();
+                    options[optionIndex].click();
+                }
+            }
+        });
+        
+        // 为每个选项添加索引标记（显示数字快捷键）
+        options.forEach((option, index) => {
+            const shortcutNumber = document.createElement('div');
+            shortcutNumber.className = 'option-shortcut';
+            shortcutNumber.textContent = index + 1;
+            shortcutNumber.style = `
+                width: 28px;
+                height: 28px;
+                background: rgba(79, 70, 229, 0.1);
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-weight: bold;
+                color: var(--primary);
+                margin-right: -5px;
+            `;
+            option.insertBefore(shortcutNumber, option.firstChild);
+        });
+
+        });    
+    </script>
+</body>
+</html>

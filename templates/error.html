@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误 | 词汇大师</title>
+    <style>
+        :root {
+            --primary: #6366F1;
+            --background: #F1F5F9;
+            --card: #FFFFFF;
+            --text: #1E293B;
+            --text-secondary: #64748B;
+            --danger: #EF4444;
+            --border: #E2E8F0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro', 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            min-height: 100vh;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .error-card {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.1);
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .error-icon {
+            font-size: 70px;
+            color: var(--danger);
+            margin: 0 auto 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(239, 68, 68, 0.08);
+            border: 2px solid rgba(239, 68, 68, 0.15);
+        }
+        
+        h1 {
+            color: var(--danger);
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            color: var(--text-secondary);
+            font-size: 17px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px 25px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-block;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-icon">??</div>
+        <h1>词库加载错误</h1>
+        <p>无法读取单词数据文件，请确保 common_words.txt 文件存在并包含有效的单词列表。</p>
+        <p>格式应为：单词 词性.释义 (例如：abandon v.放弃)</p>
+        <a href="/" class="btn">返回主页</a>
+    </div>
+</body>
+</html>
